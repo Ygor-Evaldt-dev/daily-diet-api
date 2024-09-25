@@ -45,7 +45,7 @@ describe("meal service", () => {
             await expect(exec()).resolves.not.toThrow();
         });
 
-        it("should throw not found exception if user is not already registred", async () => {
+        it("should throw not found exception if user is not already registered", async () => {
             const exec = async () => await mealService.create({
                 ...createMealDto,
                 userId: "fake-uuid"
@@ -56,7 +56,7 @@ describe("meal service", () => {
     });
 
     describe.only("delete", () => {
-        it("should delete an existing meal", async () => {
+        it("should delete a meal already registered", async () => {
             await userService.create(createUserDto);
             const { user } = await userService.findUnique({ email: createUserDto.email });
 
@@ -67,5 +67,12 @@ describe("meal service", () => {
 
             await expect(exec()).resolves.not.toThrow();
         });
+
+        it.only("should throw not found exception if meal is not already registered", async () => {
+            const exec = async () => await mealService.delete("fake-id");
+
+            await expect(exec()).rejects.toThrow("Refeição não cadastrada");
+        });
+
     });
 });

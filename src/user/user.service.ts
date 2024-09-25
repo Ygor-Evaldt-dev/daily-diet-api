@@ -12,8 +12,8 @@ export class UserService {
     ) { }
 
     public async create({ email, password }: CreateUserDto) {
-        const [userAlreadRegistred] = await knex("user").where({ email });
-        if (userAlreadRegistred) {
+        const [userAlreadRegistered] = await knex("user").where({ email });
+        if (userAlreadRegistered) {
             throw new ConflictException("Usuário já cadastrado");
         }
 
