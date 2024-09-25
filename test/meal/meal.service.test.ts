@@ -6,7 +6,7 @@ import { MealService } from "../../src/meal/meal.service";
 import { CreateMealDto } from "../../src/meal/dtos";
 import { CreateUserDto } from "../../src/user/dtos";
 
-describe.only("meal service", () => {
+describe("meal service", () => {
     const encrypter = new BcryptAdapter();
     const userService = new UserService(encrypter);
     const mealService = new MealService(userService);
@@ -40,6 +40,15 @@ describe.only("meal service", () => {
             });
 
             await expect(exec()).resolves.not.toThrow();
+        });
+
+        it("should throw not found exception if user is not already registred", async () => {
+            const exec = async () => await mealService.create({
+                ...createMealDto,
+                userId: "fake-uuid"
+            });
+
+            expect(exec).rejects.toThrow("Usuário não cadastrado");
         });
     });
 });
