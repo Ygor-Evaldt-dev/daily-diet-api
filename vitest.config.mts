@@ -5,6 +5,7 @@ export default defineConfig({
         env: {
             NODE_ENV: "test",
             DATABASE_URL: "./temp-database/test.db",
+            DATABASE_CLIENT: "sqlite",
             PORT: "3333",
         },
     },
