@@ -1,4 +1,4 @@
 export type UpdateUserDto = {
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
 }
