@@ -28,10 +28,11 @@ export class UserService {
 
     public async findUnique({ id, email }: FindUniqueUserDto) {
         const queryCondition: FindUniqueUserDto = {};
+
         if (id) queryCondition.id = id;
         if (email) queryCondition.email = email;
 
-        const [user] = await knex("user").where(queryCondition);
+        const user = await knex("user").where(queryCondition).first();
         if (!user || (!id && !email)) {
             throw new NotFoundException("Usuário não cadastrado");
         }
@@ -40,13 +41,9 @@ export class UserService {
     }
 
     public async update(id: string, { email, password }: UpdateUserDto) {
-        // const [user] = await knex("user").where({ id });
         const { user } = await this.findUnique({ id });
-        // if (!user) {
-        //     throw new NotFoundException("Usuário não cadastrado");
-        // }
 
-        const [userWithSameEmail] = email ? await knex("user").where({ email }) : [undefined];
+        const userWithSameEmail = email ? await knex("user").where({ email }).first() : undefined;
         if (userWithSameEmail) {
             throw new ConflictException("Usuário já cadastrado");
         }

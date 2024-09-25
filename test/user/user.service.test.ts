@@ -3,7 +3,7 @@ import { UserService } from "../../src/user/user.service";
 import { handleMigrations } from "../utils/handle-migrations";
 import { BcryptAdapter } from "../../src/adapters/bcrypt.adapter";
 
-describe.skip("user service", () => {
+describe("user service", () => {
     const encrypter = new BcryptAdapter();
     const userService = new UserService(encrypter);
 

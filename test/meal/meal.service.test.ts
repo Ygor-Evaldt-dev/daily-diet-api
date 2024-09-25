@@ -55,7 +55,7 @@ describe("meal service", () => {
         });
     });
 
-    describe.only("delete", () => {
+    describe("delete", () => {
         it("should delete a meal already registered", async () => {
             await userService.create(createUserDto);
             const { user } = await userService.findUnique({ email: createUserDto.email });
