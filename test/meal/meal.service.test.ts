@@ -7,6 +7,8 @@ import { CreateMealDto } from "../../src/meal/dtos";
 import { CreateUserDto } from "../../src/user/dtos";
 
 describe("meal service", () => {
+    const currentDate = new Date();
+
     const encrypter = new BcryptAdapter();
     const userService = new UserService(encrypter);
     const mealService = new MealService(userService);
@@ -19,6 +21,7 @@ describe("meal service", () => {
     const createMealDto: CreateMealDto = {
         name: "Alimentação saudável",
         description: "Arroz com cenoura, tomate e alface",
+        createdAt: `${currentDate}`,
         isOnDiet: true,
         userId: ""
     };

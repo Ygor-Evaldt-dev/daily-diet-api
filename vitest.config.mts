@@ -8,5 +8,6 @@ export default defineConfig({
             DATABASE_CLIENT: "sqlite",
             PORT: "3333",
         },
+        fileParallelism: false,
     },
 });
