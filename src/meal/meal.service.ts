@@ -31,8 +31,8 @@ export class MealService {
         return { meal };
     }
 
-    public async findMany() {
-        const meals = await knex("meal").select();
+    public async findMany(userId: string) {
+        const meals = await knex("meal").where({ user_id: userId }).select();
         if (meals.length === 0) {
             throw new NotFoundException("Nenhuma refeição não cadastrada");
         }

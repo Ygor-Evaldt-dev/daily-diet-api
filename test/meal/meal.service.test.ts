@@ -61,16 +61,15 @@ describe("meal service", () => {
             const { user } = await userService.findUnique({ email: createUserDto.email });
 
             await mealService.create({ ...createMealDto, userId: user.id });
-            const { meals } = await mealService.findMany();
+            const { meals } = await mealService.findMany(user.id);
 
             const exec = async () => await mealService.delete(meals[0].id);
 
             await expect(exec()).resolves.not.toThrow();
         });
 
-        it.only("should throw not found exception if meal is not already registered", async () => {
+        it("should throw not found exception if meal is not already registered", async () => {
             const exec = async () => await mealService.delete("fake-id");
-
             await expect(exec()).rejects.toThrow("Refeição não cadastrada");
         });
 
