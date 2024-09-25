@@ -35,13 +35,13 @@ describe("user service", () => {
         it("should to find unique user", async () => {
             await userService.create(createUserDto);
 
-            const { user } = await userService.findUnique(createUserDto.email);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
 
             expect(user.email).toEqual(createUserDto.email);
         });
 
         it("should throw not found exception if an especific user is not registred", async () => {
-            const exec = async () => await userService.findUnique(createUserDto.email);
+            const exec = async () => await userService.findUnique({ email: createUserDto.email });
             expect(exec).rejects.toThrow("Usuário não cadastrado");
         });
     });
@@ -49,7 +49,7 @@ describe("user service", () => {
     describe("update", () => {
         it("should update an user alredy registres", async () => {
             await userService.create(createUserDto);
-            const { user } = await userService.findUnique(createUserDto.email);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
 
             const updateUserDto = {
                 email: "update@gmail.com",
@@ -72,7 +72,7 @@ describe("user service", () => {
 
         it("should throw conflict exception if user with same e-mail already registred", async () => {
             await userService.create(createUserDto);
-            const { user } = await userService.findUnique(createUserDto.email);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
 
             const updateUserDto = { ...createUserDto };
             const exec = async () => await userService.update(user.id, updateUserDto);

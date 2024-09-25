@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { knex } from "../database";
 import { IEncrypter } from "../ports/encrypter.interface";
-import { CreateUserDto, UpdateUserDto } from "./dto";
+import { CreateUserDto, FindUniqueUserDto, UpdateUserDto } from "./dtos";
 import { ConflictException } from "../common/exceptions/conflict.exception";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
 
@@ -26,9 +26,13 @@ export class UserService {
         });
     }
 
-    public async findUnique(email: string) {
-        const [user] = await knex("user").where({ email });
-        if (!user) {
+    public async findUnique({ id, email }: FindUniqueUserDto) {
+        const queryCondition: FindUniqueUserDto = {};
+        if (id) queryCondition.id = id;
+        if (email) queryCondition.email = email;
+
+        const [user] = await knex("user").where(queryCondition);
+        if (!user || (!id && !email)) {
             throw new NotFoundException("Usuário não cadastrado");
         }
 
@@ -36,10 +40,11 @@ export class UserService {
     }
 
     public async update(id: string, { email, password }: UpdateUserDto) {
-        const [user] = await knex("user").where({ id });
-        if (!user) {
-            throw new NotFoundException("Usuário não cadastrado");
-        }
+        // const [user] = await knex("user").where({ id });
+        const { user } = await this.findUnique({ id });
+        // if (!user) {
+        //     throw new NotFoundException("Usuário não cadastrado");
+        // }
 
         const [userWithSameEmail] = email ? await knex("user").where({ email }) : [undefined];
         if (userWithSameEmail) {
