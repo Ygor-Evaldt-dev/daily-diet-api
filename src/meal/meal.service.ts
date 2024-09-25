@@ -31,6 +31,15 @@ export class MealService {
         return { meal };
     }
 
+    public async findMany() {
+        const meals = await knex("meal").select();
+        if (meals.length === 0) {
+            throw new NotFoundException("Nenhuma refeição não cadastrada");
+        }
+
+        return { meals };
+    }
+
     public async delete(id: string) {
         await this.findUnique(id);
 

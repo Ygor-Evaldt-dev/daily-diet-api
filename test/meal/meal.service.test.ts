@@ -54,4 +54,18 @@ describe("meal service", () => {
             expect(exec).rejects.toThrow("Usuário não cadastrado");
         });
     });
+
+    describe.only("delete", () => {
+        it("should delete an existing meal", async () => {
+            await userService.create(createUserDto);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
+
+            await mealService.create({ ...createMealDto, userId: user.id });
+            const { meals } = await mealService.findMany();
+
+            const exec = async () => await mealService.delete(meals[0].id);
+
+            await expect(exec()).resolves.not.toThrow();
+        });
+    });
 });
