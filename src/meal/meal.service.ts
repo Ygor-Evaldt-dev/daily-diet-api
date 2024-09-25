@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { knex } from "../database";
 import { UserService } from "../user/user.service";
 import { CreateMealDto } from "./dtos";
@@ -11,8 +12,10 @@ export class MealService {
         await this.userService.findUnique({ id: userId });
 
         await knex("meal").insert({
+            id: randomUUID(),
             name,
             description,
+            created_at: new Date(),
             user_id: userId
         });
     }
