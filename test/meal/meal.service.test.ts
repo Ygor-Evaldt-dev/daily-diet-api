@@ -6,7 +6,7 @@ import { MealService } from "../../src/meal/meal.service";
 import { CreateMealDto } from "../../src/meal/dtos";
 import { CreateUserDto } from "../../src/user/dtos";
 
-describe("meal service", () => {
+describe.only("meal service", () => {
     const encrypter = new BcryptAdapter();
     const userService = new UserService(encrypter);
     const mealService = new MealService(userService);
@@ -19,6 +19,7 @@ describe("meal service", () => {
     const createMealDto: CreateMealDto = {
         name: "Alimentação saudável",
         description: "Arroz com cenoura, tomate e alface",
+        isOnDiet: true,
         userId: ""
     };
 
@@ -26,7 +27,7 @@ describe("meal service", () => {
         handleMigrations();
     });
 
-    describe.only("create", () => {
+    describe("create", () => {
         it("should create a new meal", async () => {
             await userService.create(createUserDto);
             const { user } = await userService.findUnique({

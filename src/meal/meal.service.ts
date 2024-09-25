@@ -8,13 +8,14 @@ export class MealService {
         private readonly userService: UserService
     ) { }
 
-    public async create({ name, description, userId }: CreateMealDto) {
+    public async create({ name, description, isOnDiet, userId }: CreateMealDto) {
         await this.userService.findUnique({ id: userId });
 
         await knex("meal").insert({
             id: randomUUID(),
             name,
             description,
+            is_on_diet: isOnDiet,
             created_at: new Date(),
             user_id: userId
         });
