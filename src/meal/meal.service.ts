@@ -1,7 +1,7 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { knex } from "../database";
 import { UserService } from "../user/user.service";
-import { CreateMealDto } from "./dtos";
+import { CreateMealDto, FindManyMealDto } from "./dtos";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
 
 export class MealService {
@@ -31,13 +31,33 @@ export class MealService {
         return { meal };
     }
 
-    public async findMany(userId: string) {
-        const meals = await knex("meal").where({ user_id: userId }).select();
+    public async findMany({ userId, page, take }: FindManyMealDto) {
+        const getTotalPromise = knex("meal")
+            .select()
+            .where({ user_id: userId })
+            .count("id", { as: "total" });
+
+        const getMealsPromise = knex("meal")
+            .where({ user_id: userId })
+            .limit(take)
+            .offset(page * take)
+            .select();
+
+        const [total, meals] = await Promise.all([
+            getTotalPromise,
+            getMealsPromise
+        ]);
+
         if (meals.length === 0) {
             throw new NotFoundException("Nenhuma refeição não cadastrada");
         }
 
-        return { meals };
+        return {
+            meals,
+            page,
+            take,
+            total: total[0].total
+        };
     }
 
     public async delete(id: string) {
