@@ -1,9 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { knex } from "../database";
 import { UserService } from "../user/user.service";
-import { CreateMealDto, FindManyMealDto } from "./dtos";
+import { CreateMealDto, FindManyMealDto, UpdateMealDto } from "./dtos";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
 import { Meal } from "knex/types/tables";
+import { UnauthorizedException } from "../common/exceptions";
 
 export class MealService {
     constructor(
@@ -105,6 +106,29 @@ export class MealService {
         });
 
         return { bestSequence };
+    }
+
+    public async update(id: string, {
+        name,
+        description,
+        isOnDiet,
+        createdAt,
+        userId
+    }: UpdateMealDto) {
+        const { meal } = await this.findUnique(id);
+
+        if (meal.user_id !== userId) {
+            throw new UnauthorizedException("Você não tem permissão para atualizar este registro");
+        }
+
+        await knex("meal")
+            .update({
+                name: name || meal.name,
+                description: description || meal.description,
+                is_on_diet: isOnDiet === false ? isOnDiet : meal.is_on_diet,
+                created_at: createdAt ? new Date(createdAt) : meal.created_at
+            })
+            .where({ id, user_id: userId });
     }
 
     public async delete(id: string) {

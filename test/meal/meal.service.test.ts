@@ -231,6 +231,30 @@ describe("meal service", () => {
         });
     });
 
+    describe("update", () => {
+        it.only("should update an user meal already registered", async () => {
+            await userService.create(createUserDto);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
+
+            await mealService.create({ ...createMealDto, userId: user.id });
+            const { meals } = await mealService.findMany({
+                ...findManyDto,
+                userId: user.id
+            });
+
+            const meal = meals[0];
+
+            const exec = async () => await mealService.update(meal.id, {
+                userId: user.id,
+                name: "nome atualizado",
+                description: "descrição atualizada",
+                isOnDiet: false,
+            });
+
+            await expect(exec()).resolves.not.toThrow();
+        });
+    });
+
     describe("delete", () => {
         it("should delete a meal already registered", async () => {
             await userService.create(createUserDto);
