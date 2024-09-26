@@ -232,7 +232,7 @@ describe("meal service", () => {
     });
 
     describe("update", () => {
-        it.only("should update an user meal already registered", async () => {
+        it("should update an user meal already registered", async () => {
             await userService.create(createUserDto);
             const { user } = await userService.findUnique({ email: createUserDto.email });
 
@@ -252,6 +252,30 @@ describe("meal service", () => {
             });
 
             await expect(exec()).resolves.not.toThrow();
+        });
+
+        it("should throw unauthorized exception if user is not authorized", async () => {
+            await userService.create(createUserDto);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
+
+            await mealService.create({ ...createMealDto, userId: user.id });
+            const { meals } = await mealService.findMany({
+                ...findManyDto,
+                userId: user.id
+            });
+
+            const meal = meals[0];
+
+            const exec = async () => await mealService.update(meal.id, {
+                userId: "fake-id",
+                name: "nome atualizado",
+                description: "descrição atualizada",
+                isOnDiet: false,
+            });
+
+            expect(exec)
+                .rejects
+                .toThrow("Você não tem permissão para atualizar este registro");
         });
     });
 

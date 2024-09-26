@@ -40,7 +40,7 @@ export class MealService {
             .offset(page * take)
             .select();
 
-        const [total, meals] = await Promise.all([
+        const [{ total }, meals] = await Promise.all([
             this.findTotalOfMeals(userId),
             getMealsPromise
         ]);
