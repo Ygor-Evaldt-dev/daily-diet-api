@@ -3,6 +3,7 @@ import { knex } from "../database";
 import { UserService } from "../user/user.service";
 import { CreateMealDto, FindManyMealDto } from "./dtos";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
+import { Meal } from "knex/types/tables";
 
 export class MealService {
     constructor(
@@ -32,11 +33,6 @@ export class MealService {
     }
 
     public async findMany({ userId, page, take }: FindManyMealDto) {
-        const getTotalPromise = knex("meal")
-            .select()
-            .where({ user_id: userId })
-            .count("id", { as: "total" });
-
         const getMealsPromise = knex("meal")
             .where({ user_id: userId })
             .limit(take)
@@ -44,7 +40,7 @@ export class MealService {
             .select();
 
         const [total, meals] = await Promise.all([
-            getTotalPromise,
+            this.findTotalOfMeals(userId),
             getMealsPromise
         ]);
 
@@ -52,12 +48,63 @@ export class MealService {
             throw new NotFoundException("Nenhuma refeição não cadastrada");
         }
 
-        return {
-            meals,
-            page,
-            take,
-            total: total[0].total
-        };
+        return { meals, page, take, total };
+    }
+
+    public async findTotalOfMeals(userId: string) {
+        const [{ total }] = await knex("meal")
+            .select()
+            .where({ user_id: userId })
+            .count("id", { as: "total" });
+
+        return { total: Number(total) };
+    }
+
+    public async findTotalOfMealsRegardingDiet(
+        userId: string,
+        isOnDiet: boolean = false
+    ) {
+        const [{ total }] = await knex("meal")
+            .select()
+            .where({
+                is_on_diet: isOnDiet,
+                user_id: userId
+            })
+            .count("id", { as: "total" });
+
+        return { total: Number(total) };
+    }
+
+    public async findTotalMealsOfTheBestSequencyWithinDiet(userId: string) {
+        let currentSequence = 0;
+        let bestSequence = 0;
+
+        const mealStream = knex("meal")
+            .select("is_on_diet")
+            .where({ user_id: userId })
+            .stream();
+
+        await new Promise((resolve, reject) => {
+            mealStream
+                .on("data", (meal: Meal) => {
+                    if (meal.is_on_diet) {
+                        currentSequence++;
+                    } else {
+                        bestSequence = Math.max(bestSequence, currentSequence);
+                        currentSequence = 0;
+                    }
+                })
+                .on("end", () => {
+                    bestSequence = Math.max(bestSequence, currentSequence);
+                    resolve(bestSequence);
+                })
+                //eslint-disable-next-line
+                .on("error", (error: any) => {
+                    reject(error);
+                });
+        });
+
+        return { bestSequence };
     }
 
     public async delete(id: string) {

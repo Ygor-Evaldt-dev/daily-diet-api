@@ -122,6 +122,115 @@ describe("meal service", () => {
         });
     });
 
+    describe("find total of meals", () => {
+        it("should return the total of meals", async () => {
+            await userService.create(createUserDto);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
+
+            await Promise.all([
+                mealService.create({ ...createMealDto, userId: user.id }),
+                mealService.create({ ...createMealDto, userId: user.id })
+            ]);
+
+            const { total } = await mealService.findTotalOfMeals(user.id);
+            expect(total).toEqual(2);
+        });
+    });
+
+    describe("find the best sequency of meals within the diet", () => {
+        it("should return the best sequescy", async () => {
+            await userService.create(createUserDto);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
+
+            await Promise.all([
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id,
+                    isOnDiet: false
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id,
+                    isOnDiet: false
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id,
+                    isOnDiet: false
+                })
+            ]);
+
+            const { bestSequence } = await mealService
+                .findTotalMealsOfTheBestSequencyWithinDiet(user.id);
+
+            expect(bestSequence).toEqual(2);
+        });
+    });
+
+    describe("find total of meals regarding the diet", () => {
+        it("should return the total of meals within the diet", async () => {
+            await userService.create(createUserDto);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
+
+            await Promise.all([
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id,
+                    isOnDiet: false
+                })
+            ]);
+
+            const { total } = await mealService.findTotalOfMealsRegardingDiet(user.id, true);
+
+            expect(total).toEqual(2);
+        });
+
+        it("should return the total of meals outside the diet", async () => {
+            await userService.create(createUserDto);
+            const { user } = await userService.findUnique({ email: createUserDto.email });
+
+            await Promise.all([
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id
+                }),
+                mealService.create({
+                    ...createMealDto,
+                    userId: user.id,
+                    isOnDiet: false
+                })
+            ]);
+
+            const { total } = await mealService.findTotalOfMealsRegardingDiet(user.id);
+
+            expect(total).toEqual(1);
+        });
+    });
+
     describe("delete", () => {
         it("should delete a meal already registered", async () => {
             await userService.create(createUserDto);
