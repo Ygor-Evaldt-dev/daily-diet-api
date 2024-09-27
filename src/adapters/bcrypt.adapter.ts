@@ -1,8 +1,9 @@
+import { injectable } from "inversify";
 import { hash, compare } from "bcrypt";
 
 import { IEncrypter } from "../ports/encrypter.interface";
 
-
+@injectable()
 export class BcryptAdapter implements IEncrypter {
     private readonly saltRounds: number = 12;
 

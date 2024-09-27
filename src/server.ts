@@ -1,8 +1,6 @@
 import { app } from "./app";
 import { env } from "./env";
 
-app.listen({ port: env.PORT }).then(() => {
-    console.log(`HTTP Server running on port ${env.PORT}`);
-}).catch((error) => {
-    console.error(error);
+app.listen(env.PORT, () => {
+    console.log(`HTTP server online on port ${env.PORT}`);
 });

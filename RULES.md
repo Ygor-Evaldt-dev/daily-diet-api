@@ -1,11 +1,11 @@
 # Regras da aplicação
 
 ## Requisítos funcionais
-- [] Deve ser possível criar um usuário com as seguintes informações:
+- [x] Deve ser possível criar um usuário com as seguintes informações:
     - [x] E-mail
     - [x] Senha
-- [] Deve ser possível obter os dados do usuário
-- [] Deve ser possível atualizar os dados do usuário
+- [x] Deve ser possível obter os dados do usuário
+- [x] Deve ser possível atualizar os dados do usuário
 - [] Deve ser possível identificar o usuário entre as requisições
 - [] Deve ser possível registrar uma refeição feita, com as seguintes informações:
     - [x] Nome;

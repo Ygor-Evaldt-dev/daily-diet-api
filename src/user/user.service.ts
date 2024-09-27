@@ -1,13 +1,17 @@
 import { randomUUID } from "node:crypto";
 
+import { inject, injectable } from "inversify";
+
 import { knex } from "../database";
 import { IEncrypter } from "../ports/encrypter.interface";
 import { CreateUserDto, FindUniqueUserDto, UpdateUserDto } from "./dtos";
 import { ConflictException } from "../common/exceptions/conflict.exception";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
 
+@injectable()
 export class UserService {
     constructor(
+        @inject("IEncrypter")
         private readonly encrypter: IEncrypter
     ) { }
 

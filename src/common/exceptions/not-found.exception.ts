@@ -1,4 +1,4 @@
-import { HttpStatus } from "../http-status";
+import { HttpStatus } from "../http/http-status";
 
 export class NotFoundException extends Error {
     constructor(
