@@ -8,7 +8,7 @@ import {
     UnauthorizedException
 } from "../exceptions";
 
-export function handleRequestErros<T>(response: Response, error: T) {
+export function handleRequestErrors<T>(response: Response, error: T) {
     if (error instanceof ZodError) {
         const errors = error.errors.map(error => ({
             path: error.path.join("."),

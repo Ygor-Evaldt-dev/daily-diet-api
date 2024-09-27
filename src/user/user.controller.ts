@@ -5,7 +5,7 @@ import { UserService } from "./user.service";
 import { createUserSchema, updateUserSchema } from "./schemas";
 
 import { HttpStatus } from "../common/http/http-status";
-import { handleRequestErros } from "../common/http/handle-request-errors";
+import { handleRequestErrors } from "../common/http/handle-request-errors";
 
 @injectable()
 export class UserController {
@@ -21,7 +21,7 @@ export class UserController {
 
             res.sendStatus(HttpStatus.CREATED);
         } catch (error) {
-            handleRequestErros<typeof error>(res, error);
+            handleRequestErrors<typeof error>(res, error);
         }
     }
 
@@ -35,7 +35,7 @@ export class UserController {
 
             res.status(HttpStatus.OK).send({ user });
         } catch (error) {
-            handleRequestErros<typeof error>(res, error);
+            handleRequestErrors<typeof error>(res, error);
         }
     }
 
@@ -51,7 +51,7 @@ export class UserController {
 
             res.sendStatus(HttpStatus.OK);
         } catch (error) {
-            handleRequestErros<typeof error>(res, error);
+            handleRequestErrors<typeof error>(res, error);
         }
     }
 

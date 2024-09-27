@@ -4,6 +4,8 @@ import { Request, Response } from "express";
 
 import { MealService } from "./meal.service";
 import { HttpStatus } from "../common/http/http-status";
+import { createMealSchema } from "./schemas";
+import { handleRequestErrors } from "../common/http/handle-request-errors";
 
 @injectable()
 export class MealController {
@@ -13,6 +15,13 @@ export class MealController {
     ) { }
 
     public async create(req: Request, res: Response) {
-        res.sendStatus(HttpStatus.CREATED);
+        try {
+            const body = createMealSchema.parse(req.body);
+            await this.mealService.create(body);
+
+            res.sendStatus(HttpStatus.CREATED);
+        } catch (error) {
+            handleRequestErrors<typeof error>(res, error);
+        }
     }
 }
