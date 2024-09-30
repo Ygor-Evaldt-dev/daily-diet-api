@@ -16,7 +16,13 @@ export class MealService {
         private readonly userService: UserService
     ) { }
 
-    public async create({ name, description, createdAt, isOnDiet, userId }: CreateMealDto) {
+    public async create({
+        name,
+        description,
+        createdAt,
+        isOnDiet,
+        userId
+    }: CreateMealDto) {
         await this.userService.findUnique({ id: userId });
 
         await knex("meal").insert({
@@ -29,7 +35,7 @@ export class MealService {
         });
     }
 
-    public async findUnique(id: string) {
+    public async findUnique(id: string = "") {
         const meal = await knex("meal").where({ id }).first();
         if (!meal) {
             throw new NotFoundException("Refeição não cadastrada");
@@ -38,7 +44,11 @@ export class MealService {
         return { meal };
     }
 
-    public async findMany({ userId, page, take }: FindManyMealDto) {
+    public async findMany({
+        userId = "",
+        page = 0,
+        take = 25
+    }: FindManyMealDto) {
         const getMealsPromise = knex("meal")
             .where({ user_id: userId })
             .limit(take)
@@ -57,7 +67,7 @@ export class MealService {
         return { meals, page, take, total };
     }
 
-    public async findTotalOfMeals(userId: string) {
+    public async findTotalOfMeals(userId: string = "") {
         const [{ total }] = await knex("meal")
             .select()
             .where({ user_id: userId })
@@ -67,7 +77,7 @@ export class MealService {
     }
 
     public async findTotalOfMealsRegardingDiet(
-        userId: string,
+        userId: string = "",
         isOnDiet: boolean = false
     ) {
         const [{ total }] = await knex("meal")
@@ -81,7 +91,7 @@ export class MealService {
         return { total: Number(total) };
     }
 
-    public async findTotalMealsOfTheBestSequencyWithinDiet(userId: string) {
+    public async findTotalMealsOfTheBestSequencyWithinDiet(userId: string = "") {
         let currentSequence = 0;
         let bestSequence = 0;
 
@@ -113,7 +123,7 @@ export class MealService {
         return { bestSequence };
     }
 
-    public async update(id: string, {
+    public async update(id: string = "", {
         name,
         description,
         isOnDiet,
