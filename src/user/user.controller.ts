@@ -6,11 +6,12 @@ import { createUserSchema, updateUserSchema } from "./schemas";
 
 import { HttpStatus } from "../common/http/http-status";
 import { handleRequestErrors } from "../common/http/handle-request-errors";
+import { TYPES } from "../container-manegment/types";
 
 @injectable()
 export class UserController {
     constructor(
-        @inject("UserService")
+        @inject(TYPES.UserService)
         private readonly userService: UserService
     ) { }
 

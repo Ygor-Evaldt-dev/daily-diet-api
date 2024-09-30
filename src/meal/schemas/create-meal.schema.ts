@@ -1,12 +1,36 @@
 import { z } from "zod";
 
 export const createMealSchema = z.object({
-    name: z.coerce
-        .string()
-        .min(2, "O nome da refeição deve ter no mínimo 2 caracteres")
-        .max(100, "O nome da refeição deve ter no máximo 100 caracteres"),
-    description: z.coerce.string(),
-    isOnDiet: z.coerce.boolean(),
-    createdAt: z.coerce.string().datetime(),
-    userId: z.coerce.string()
+    name: z
+        .string({
+            required_error: "'name' is required",
+            invalid_type_error: "'name' deve ser uma string"
+        })
+        .trim()
+        .toLowerCase()
+        .min(2, "'name' should have a minimum of 2 characters")
+        .max(100, "'name' should have a maximun of 100 characters"),
+    description: z
+        .string({
+            required_error: "'description is required'",
+            invalid_type_error: "'description' deve ser uma string"
+        })
+        .trim()
+        .toLowerCase()
+        .min(10, "'description' should have a minimum of 10 characters")
+        .max(250, "'description' should have a maximun of 250 characters"),
+    isOnDiet: z
+        .boolean({
+            required_error: "'isOnDiet' is required",
+            invalid_type_error: "'isOnDiet' should be a boolean value"
+        }),
+    createdAt: z.coerce
+        .string({
+            required_error: "'createdAt' is required",
+            invalid_type_error: "'createdAt' should be a string"
+        })
+        .datetime({ message: "createdAt should be a valid date" }),
+    userId: z
+        .string({ message: "'userId' is required" })
+        .trim()
 });

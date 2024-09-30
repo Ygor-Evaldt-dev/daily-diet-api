@@ -1,13 +1,18 @@
 import { randomUUID } from "node:crypto";
+import { inject, injectable } from "inversify";
+
 import { knex } from "../database";
 import { UserService } from "../user/user.service";
 import { CreateMealDto, FindManyMealDto, UpdateMealDto } from "./dtos";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
 import { Meal } from "knex/types/tables";
 import { UnauthorizedException } from "../common/exceptions";
+import { TYPES } from "../container-manegment/types";
 
+@injectable()
 export class MealService {
     constructor(
+        @inject(TYPES.UserService)
         private readonly userService: UserService
     ) { }
 

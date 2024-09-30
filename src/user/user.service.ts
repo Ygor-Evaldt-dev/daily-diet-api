@@ -7,11 +7,12 @@ import { IEncrypter } from "../ports/encrypter.interface";
 import { CreateUserDto, FindUniqueUserDto, UpdateUserDto } from "./dtos";
 import { ConflictException } from "../common/exceptions/conflict.exception";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
+import { TYPES } from "../container-manegment/types";
 
 @injectable()
 export class UserService {
     constructor(
-        @inject("IEncrypter")
+        @inject(TYPES.IEncrypter)
         private readonly encrypter: IEncrypter
     ) { }
 
