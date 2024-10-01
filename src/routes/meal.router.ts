@@ -12,5 +12,6 @@ router.get("/:userId/:page/:take", (req, res) => mealController.findMany(req, re
 router.get("/:id", (req, res) => mealController.findUnique(req, res));
 router.put("/:id", (req, res) => mealController.update(req, res));
 router.delete("/:id", (req, res) => mealController.delete(req, res));
+router.get("/summary/:userId", (req, res) => mealController.summary(req, res));
 
 export default router;

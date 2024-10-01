@@ -54,6 +54,26 @@ export class MealController {
         }
     }
 
+    public async summary(req: Request, res: Response) {
+        try {
+            const { userId } = req.params;
+
+            const [meals, { bestSequence }, insideDiet] = await Promise.all([
+                this.mealService.findTotalOfMeals(userId),
+                this.mealService.findTotalMealsOfTheBestSequencyWithinDiet(userId),
+                this.mealService.findTotalOfMealsRegardingDiet(userId)
+            ]);
+
+            res.status(HttpStatus.OK).send({
+                totalOfMeals: meals.total,
+                bestSequence,
+                totalInsideDiet: insideDiet.total
+            });
+        } catch (error) {
+            handleRequestErrors<typeof error>(res, error);
+        }
+    }
+
     public async update(req: Request, res: Response) {
         try {
             const body = updateMealSchema.parse(req.body);
