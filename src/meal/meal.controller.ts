@@ -1,7 +1,6 @@
 import { inject, injectable } from "inversify";
 import { Request, Response } from "express";
 
-
 import { MealService } from "./meal.service";
 import { HttpStatus } from "../common/http/http-status";
 import { createMealSchema } from "./schemas";
