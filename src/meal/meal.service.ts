@@ -38,7 +38,7 @@ export class MealService {
     public async findUnique(id: string = "") {
         const meal = await knex("meal").where({ id }).first();
         if (!meal) {
-            throw new NotFoundException("Refeição não cadastrada");
+            throw new NotFoundException("Meal not found");
         }
 
         return { meal };
@@ -61,7 +61,7 @@ export class MealService {
         ]);
 
         if (meals.length === 0) {
-            throw new NotFoundException("Nenhuma refeição não cadastrada");
+            throw new NotFoundException("No meal found");
         }
 
         return { meals, page, take, total };
@@ -133,7 +133,7 @@ export class MealService {
         const { meal } = await this.findUnique(id);
 
         if (meal.user_id !== userId) {
-            throw new UnauthorizedException("Você não tem permissão para atualizar este registro");
+            throw new UnauthorizedException("Permission denied");
         }
 
         await knex("meal")

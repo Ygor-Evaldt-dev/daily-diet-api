@@ -8,6 +8,7 @@ import { createMealSchema } from "./schemas";
 import { handleRequestErrors } from "../common/http/handle-request-errors";
 import { TYPES } from "../container-manegment/types";
 import { findManyMealSchema } from "./schemas/find-many-meal.schema";
+import { updateMealSchema } from "./schemas/update-meal.schema";
 
 @injectable()
 export class MealController {
@@ -48,6 +49,17 @@ export class MealController {
             });
 
             res.status(HttpStatus.OK).send(response);
+        } catch (error) {
+            handleRequestErrors<typeof error>(res, error);
+        }
+    }
+
+    public async update(req: Request, res: Response) {
+        try {
+            const body = updateMealSchema.parse(req.body);
+            await this.mealService.update(req.params.id, body);
+
+            res.sendStatus(HttpStatus.OK);
         } catch (error) {
             handleRequestErrors<typeof error>(res, error);
         }
