@@ -9,5 +9,6 @@ export default defineConfig({
             PORT: "3333",
         },
         fileParallelism: false,
+        setupFiles: "./setup-test.ts"
     },
 });

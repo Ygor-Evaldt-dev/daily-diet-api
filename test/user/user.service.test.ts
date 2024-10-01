@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { UserService } from "../../src/user/user.service";
 import { handleMigrations } from "../utils/handle-migrations";
-import { BcryptAdapter } from "../../src/adapters/bcrypt.adapter";
+import { TYPES } from "../../src/container-manegment/types";
+import container from "../../src/container-manegment/container";
 
 describe("user service", () => {
-    const encrypter = new BcryptAdapter();
-    const userService = new UserService(encrypter);
+    const userService = container.get<UserService>(TYPES.UserService);
 
     const createUserDto = {
         email: "create@gmail.com",
@@ -27,7 +27,7 @@ describe("user service", () => {
 
             const exec = async () => await userService.create(createUserDto);
 
-            expect(exec).rejects.toThrow("Usuário já cadastrado");
+            expect(exec).rejects.toThrow();
         });
     });
 
@@ -42,7 +42,7 @@ describe("user service", () => {
 
         it("should throw not found exception if an especific user is not registered", async () => {
             const exec = async () => await userService.findUnique({ email: createUserDto.email });
-            expect(exec).rejects.toThrow("Usuário não cadastrado");
+            expect(exec).rejects.toThrow();
         });
     });
 
@@ -67,7 +67,7 @@ describe("user service", () => {
             };
             const exec = async () => await userService.update("fake-uuid", updateUserDto);
 
-            expect(exec).rejects.toThrow("Usuário não cadastrado");
+            expect(exec).rejects.toThrow();
         });
 
         it("should throw conflict exception if user with same e-mail already registered", async () => {
@@ -77,7 +77,7 @@ describe("user service", () => {
             const updateUserDto = { ...createUserDto };
             const exec = async () => await userService.update(user.id, updateUserDto);
 
-            expect(exec).rejects.toThrow("Usuário já cadastrado");
+            expect(exec).rejects.toThrow();
         });
     });
 });

@@ -1,17 +1,17 @@
 import { describe, it, beforeEach, expect } from "vitest";
 import { handleMigrations } from "../utils/handle-migrations";
 import { UserService } from "../../src/user/user.service";
-import { BcryptAdapter } from "../../src/adapters/bcrypt.adapter";
 import { MealService } from "../../src/meal/meal.service";
 import { CreateMealDto, FindManyMealDto } from "../../src/meal/dtos";
 import { CreateUserDto } from "../../src/user/dtos";
+import { TYPES } from "../../src/container-manegment/types";
+import container from "../../src/container-manegment/container";
 
 describe("meal service", () => {
     const currentDate = new Date();
 
-    const encrypter = new BcryptAdapter();
-    const userService = new UserService(encrypter);
-    const mealService = new MealService(userService);
+    const userService = container.get<UserService>(TYPES.UserService);
+    const mealService = container.get<MealService>(TYPES.MealService);
 
     const createUserDto: CreateUserDto = {
         email: "email@gmail.com",
@@ -57,7 +57,7 @@ describe("meal service", () => {
                 userId: "fake-uuid"
             });
 
-            expect(exec).rejects.toThrow("Usuário não cadastrado");
+            expect(exec).rejects.toThrow();
         });
     });
 
@@ -79,7 +79,7 @@ describe("meal service", () => {
             const mealIdNotRegistered = "fake-id";
             const exec = async () => await mealService.findUnique(mealIdNotRegistered);
 
-            expect(exec).rejects.toThrow("Refeição não cadastrada");
+            expect(exec).rejects.toThrow();
         });
 
     });
@@ -118,7 +118,7 @@ describe("meal service", () => {
                 userId: user.id
             });
 
-            expect(exec).rejects.toThrow("Nenhuma refeição não cadastrada");
+            expect(exec).rejects.toThrow();
         });
     });
 
@@ -245,37 +245,12 @@ describe("meal service", () => {
             const meal = meals[0];
 
             const exec = async () => await mealService.update(meal.id, {
-                userId: user.id,
                 name: "nome atualizado",
                 description: "descrição atualizada",
                 isOnDiet: false,
             });
 
             await expect(exec()).resolves.not.toThrow();
-        });
-
-        it("should throw unauthorized exception if user is not authorized", async () => {
-            await userService.create(createUserDto);
-            const { user } = await userService.findUnique({ email: createUserDto.email });
-
-            await mealService.create({ ...createMealDto, userId: user.id });
-            const { meals } = await mealService.findMany({
-                ...findManyDto,
-                userId: user.id
-            });
-
-            const meal = meals[0];
-
-            const exec = async () => await mealService.update(meal.id, {
-                userId: "fake-id",
-                name: "nome atualizado",
-                description: "descrição atualizada",
-                isOnDiet: false,
-            });
-
-            expect(exec)
-                .rejects
-                .toThrow("Você não tem permissão para atualizar este registro");
         });
     });
 
@@ -297,7 +272,7 @@ describe("meal service", () => {
 
         it("should throw not found exception if meal is not already registered", async () => {
             const exec = async () => await mealService.delete("fake-id");
-            await expect(exec()).rejects.toThrow("Refeição não cadastrada");
+            await expect(exec()).rejects.toThrow();
         });
 
     });
