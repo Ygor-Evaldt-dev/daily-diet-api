@@ -19,7 +19,7 @@ export class UserService {
     public async create({ email, password }: CreateUserDto) {
         const [userAlreadRegistered] = await knex("user").where({ email });
         if (userAlreadRegistered) {
-            throw new ConflictException("Usuário já cadastrado");
+            throw new ConflictException("User is already registered");
         }
 
         const encryptedPassword = await this.encrypter.encrypt(password);
@@ -39,7 +39,7 @@ export class UserService {
 
         const user = await knex("user").where(queryCondition).first();
         if (!user || (!id && !email)) {
-            throw new NotFoundException("Usuário não cadastrado");
+            throw new NotFoundException("Unregistered user");
         }
 
         return { user };
@@ -50,7 +50,7 @@ export class UserService {
 
         const userWithSameEmail = email ? await knex("user").where({ email }).first() : undefined;
         if (userWithSameEmail) {
-            throw new ConflictException("Usuário já cadastrado");
+            throw new ConflictException("User is already registered");
         }
 
         const passwordEncrypted = password ? await this.encrypter.encrypt(password) : user.password;

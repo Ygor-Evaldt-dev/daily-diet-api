@@ -9,6 +9,7 @@ import { handleRequestErrors } from "../common/http/handle-request-errors";
 import { TYPES } from "../container-manegment/types";
 import { findManyMealSchema } from "./schemas/find-many-meal.schema";
 import { updateMealSchema } from "./schemas/update-meal.schema";
+import { IAuthRequest } from "../routes/middlewares";
 
 @injectable()
 export class MealController {
@@ -19,7 +20,10 @@ export class MealController {
 
     public async create(req: Request, res: Response) {
         try {
-            const body = createMealSchema.parse(req.body);
+            const body = createMealSchema.parse({
+                ...req.body,
+                userId: (req as IAuthRequest).user.id
+            });
             await this.mealService.create(body);
 
             res.sendStatus(HttpStatus.CREATED);
@@ -40,10 +44,10 @@ export class MealController {
 
     public async findMany(req: Request, res: Response) {
         try {
-            const { userId, page, take } = findManyMealSchema.parse(req.params);
+            const { page, take } = findManyMealSchema.parse(req.params);
 
             const response = await this.mealService.findMany({
-                userId,
+                userId: (req as IAuthRequest).user.id,
                 page,
                 take
             });
@@ -56,7 +60,7 @@ export class MealController {
 
     public async summary(req: Request, res: Response) {
         try {
-            const { userId } = req.params;
+            const userId = (req as IAuthRequest).user.id;
 
             const [meals, { bestSequence }, insideDiet] = await Promise.all([
                 this.mealService.findTotalOfMeals(userId),
@@ -76,7 +80,9 @@ export class MealController {
 
     public async update(req: Request, res: Response) {
         try {
-            const body = updateMealSchema.parse(req.body);
+            const body = updateMealSchema.parse({
+                ...req.body
+            });
             await this.mealService.update(req.params.id, body);
 
             res.sendStatus(HttpStatus.OK);

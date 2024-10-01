@@ -3,5 +3,4 @@ export type UpdateMealDto = {
     description?: string;
     isOnDiet?: boolean;
     createdAt?: string;
-    userId: string;
 }

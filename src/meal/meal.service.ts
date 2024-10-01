@@ -6,7 +6,6 @@ import { UserService } from "../user/user.service";
 import { CreateMealDto, FindManyMealDto, UpdateMealDto } from "./dtos";
 import { NotFoundException } from "../common/exceptions/not-found.exception";
 import { Meal } from "knex/types/tables";
-import { UnauthorizedException } from "../common/exceptions";
 import { TYPES } from "../container-manegment/types";
 
 @injectable()
@@ -128,13 +127,8 @@ export class MealService {
         description,
         isOnDiet,
         createdAt,
-        userId
     }: UpdateMealDto) {
         const { meal } = await this.findUnique(id);
-
-        if (meal.user_id !== userId) {
-            throw new UnauthorizedException("Permission denied");
-        }
 
         await knex("meal")
             .update({
@@ -143,7 +137,7 @@ export class MealService {
                 is_on_diet: isOnDiet === false ? isOnDiet : meal.is_on_diet,
                 created_at: createdAt ? new Date(createdAt) : meal.created_at
             })
-            .where({ id, user_id: userId });
+            .where({ id });
     }
 
     public async delete(id: string) {

@@ -33,8 +33,5 @@ export const updateMealSchema = z.object({
             invalid_type_error: "'createdAt' should be a string"
         })
         .datetime({ message: "createdAt should be a valid date" })
-        .optional(),
-    userId: z
-        .string({ message: "'userId' is required" })
-        .trim()
+        .optional()
 });
