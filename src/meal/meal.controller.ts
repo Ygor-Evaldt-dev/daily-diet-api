@@ -52,4 +52,13 @@ export class MealController {
             handleRequestErrors<typeof error>(res, error);
         }
     }
+
+    public async delete(req: Request, res: Response) {
+        try {
+            await this.mealService.delete(req.params.id);
+            res.sendStatus(HttpStatus.OK);
+        } catch (error) {
+            handleRequestErrors<typeof error>(res, error);
+        }
+    }
 }
