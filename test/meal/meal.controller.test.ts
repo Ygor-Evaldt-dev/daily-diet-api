@@ -143,12 +143,13 @@ describe("meal controller", () => {
             request(app)
                 .post("/meal")
                 .set("Authorization", `Basic ${credentials}`)
-                .send(bodyToCreateMeal),
-            request(app)
-                .post("/meal")
-                .set("Authorization", `Basic ${credentials}`)
-                .send({ ...bodyToCreateMeal, isOnDiet: false })
+                .send(bodyToCreateMeal)
         ]);
+
+        await request(app)
+            .post("/meal")
+            .set("Authorization", `Basic ${credentials}`)
+            .send({ ...bodyToCreateMeal, isOnDiet: false });
 
         const response = await request(app)
             .get("/meal/summary")
