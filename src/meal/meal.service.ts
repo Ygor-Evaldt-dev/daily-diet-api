@@ -35,7 +35,6 @@ export class MealService {
     }
 
     public async findUnique(id: string) {
-        console.log("id", id);
         const meal = await knex("meal").where({ id }).first();
         if (!meal) {
             throw new NotFoundException("Meal not found");

@@ -60,7 +60,6 @@ export class MealController {
     public async summary(req: Request, res: Response) {
         try {
             const userId = (req as IAuthRequest).user.id;
-            console.log("userId", userId);
 
 
             const [meals, { bestSequence }, insideDiet] = await Promise.all([
@@ -68,8 +67,6 @@ export class MealController {
                 this.mealService.findTotalMealsOfTheBestSequencyWithinDiet(userId),
                 this.mealService.findTotalOfMealsRegardingDiet(userId, true)
             ]);
-
-            console.log("meals", meals);
 
             res.status(HttpStatus.OK).send({
                 totalOfMeals: meals.total,

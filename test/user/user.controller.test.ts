@@ -10,7 +10,7 @@ import {
 import { app } from "../../src/app";
 import { HttpStatus } from "../../src/common/http/http-status";
 
-describe.only("user controller", () => {
+describe("user controller", () => {
     beforeEach(() => {
         execSync("npm run knex migrate:rollback --all");
         execSync("npm run knex migrate:latest");
