@@ -6,7 +6,7 @@
     - [x] Senha
 - [x] Deve ser possível obter os dados do usuário
 - [x] Deve ser possível atualizar os dados do usuário
-- [] Deve ser possível identificar o usuário entre as requisições (sessionId)
+- [x] Deve ser possível identificar o usuário entre as requisições (sessionId)
 - [x] Deve ser possível registrar uma refeição feita, com as seguintes informações:
     - [x] Nome;
     - [x] Descrição;
