@@ -130,7 +130,7 @@ describe("meal controller", () => {
         expect(meal.id).toEqual(responseToGetMeal.body.meals[0].id);
     });
 
-    it.only("should to find meals summary from a specific user", async () => {
+    it("should to find meals summary from a specific user", async () => {
         await request(app)
             .post("/user")
             .send(bodyToCreateUser);
