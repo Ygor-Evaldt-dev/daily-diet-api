@@ -106,7 +106,7 @@ describe("meal controller", () => {
         expect(response.body.take).toEqual(take);
     });
 
-    it.only("should to find an specific meal", async () => {
+    it("should to find an specific meal", async () => {
         await request(app)
             .post("/user")
             .send(bodyToCreateUser);
@@ -125,9 +125,39 @@ describe("meal controller", () => {
             .set("Authorization", `Basic ${credentials}`);
 
         const { meal } = response.body;
-        console.log("meal", meal);
 
         expect(response.status).toEqual(HttpStatus.OK);
         expect(meal.id).toEqual(responseToGetMeal.body.meals[0].id);
+    });
+
+    it.only("should to find meals summary from a specific user", async () => {
+        await request(app)
+            .post("/user")
+            .send(bodyToCreateUser);
+
+        await Promise.all([
+            request(app)
+                .post("/meal")
+                .set("Authorization", `Basic ${credentials}`)
+                .send(bodyToCreateMeal),
+            request(app)
+                .post("/meal")
+                .set("Authorization", `Basic ${credentials}`)
+                .send(bodyToCreateMeal),
+            request(app)
+                .post("/meal")
+                .set("Authorization", `Basic ${credentials}`)
+                .send({ ...bodyToCreateMeal, isOnDiet: false })
+        ]);
+
+        const response = await request(app)
+            .get("/meal/summary")
+            .set("Authorization", `Basic ${credentials}`);
+
+        const { totalOfMeals, bestSequence, totalInsideDiet } = response.body;
+
+        expect(totalOfMeals).toEqual(3);
+        expect(bestSequence).toEqual(2);
+        expect(totalInsideDiet).toEqual(2);
     });
 });

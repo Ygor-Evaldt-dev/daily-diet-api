@@ -34,7 +34,8 @@ export class MealService {
         });
     }
 
-    public async findUnique(id: string = "") {
+    public async findUnique(id: string) {
+        console.log("id", id);
         const meal = await knex("meal").where({ id }).first();
         if (!meal) {
             throw new NotFoundException("Meal not found");
@@ -66,7 +67,7 @@ export class MealService {
         return { meals, page, take, total };
     }
 
-    public async findTotalOfMeals(userId: string = "") {
+    public async findTotalOfMeals(userId: string) {
         const [{ total }] = await knex("meal")
             .select()
             .where({ user_id: userId })
@@ -76,7 +77,7 @@ export class MealService {
     }
 
     public async findTotalOfMealsRegardingDiet(
-        userId: string = "",
+        userId: string,
         isOnDiet: boolean = false
     ) {
         const [{ total }] = await knex("meal")
@@ -90,7 +91,7 @@ export class MealService {
         return { total: Number(total) };
     }
 
-    public async findTotalMealsOfTheBestSequencyWithinDiet(userId: string = "") {
+    public async findTotalMealsOfTheBestSequencyWithinDiet(userId: string) {
         let currentSequence = 0;
         let bestSequence = 0;
 
